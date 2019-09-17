@@ -410,6 +410,16 @@ public class Activation implements Comparable<Activation> {
 
 
     public State computeValueAndWeight(SearchNode sn) throws RecursiveDepthExceededException {
+        if(inputValue != null) {
+            return new State(
+                    inputValue,
+                    inputValue,
+                    inputValue,
+                    0,
+                    0
+            );
+        }
+
         INeuron n = getINeuron();
         INeuron.SynapseSummary ss = n.getSynapseSummary();
 
