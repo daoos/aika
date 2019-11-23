@@ -304,6 +304,8 @@ public class Synapse implements Writable {
         limitDelta = 0.0;
 
         inactive = inactiveNew;
+
+        isWeak = isWeakIntern(CURRENT);
     }
 
 
@@ -326,7 +328,15 @@ public class Synapse implements Writable {
     }
 
 
+    boolean isWeak;
+
+
     public boolean isWeak(State state) {
+        return isWeak;
+    }
+
+
+    public boolean isWeakIntern(State state) {
         double w = getLimit(state) * getWeight(state);
 
         INeuron n = output.get();
@@ -398,6 +408,8 @@ public class Synapse implements Writable {
         out.writeDouble(limit);
 
         out.writeBoolean(inactive);
+
+        out.writeBoolean(isWeak);
     }
 
 
@@ -421,6 +433,8 @@ public class Synapse implements Writable {
         limit = in.readDouble();
 
         inactive = in.readBoolean();
+
+        isWeak = in.readBoolean();
     }
 
 
