@@ -69,7 +69,7 @@ public class PositionRelationTest {
         );
 
 
-        Document doc = new Document(m, "aaaaaaaaaa", 0);
+        Document doc = new Document(m, "aaaaaaaaaa");
 
         inA.addInput(doc, 0, 1);
         inB.addInput(doc, 0, 1);
@@ -126,7 +126,7 @@ public class PositionRelationTest {
                         .setRelation(END_EQUALS)
         );
 
-        Document doc = new Document(m, "aaaaaaaaaa", 0);
+        Document doc = new Document(m, "aaaaaaaaaa");
 
         inA.addInput(doc, 0, 1);
         inB.addInput(doc, 1, 2);
@@ -204,7 +204,7 @@ public class PositionRelationTest {
 
         System.out.println(n.get().getInputNode().get().logicToString());
 
-        Document doc = new Document(m, "abc Huettenheim cba", 0);
+        Document doc = new Document(m, "abc Huettenheim cba");
 
         for (int i = 0; i < doc.length(); i++) {
             char c = doc.getContent().toLowerCase().charAt(i);

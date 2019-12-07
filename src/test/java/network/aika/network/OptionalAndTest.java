@@ -167,7 +167,7 @@ public class OptionalAndTest {
 
 
         Document doc1 = new Document(m, "Essen");
-        Document doc2 = new Document(m, "essen", 1);
+        Document doc2 = new Document(m, "essen");
 
         for(Document doc: new Document[] {doc1, doc2}) {
             String txt = doc.getContent();

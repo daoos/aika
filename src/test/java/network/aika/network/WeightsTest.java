@@ -219,7 +219,7 @@ public class WeightsTest {
 
 
     private void testVariant(Model m, int i) {
-        Document doc = new Document(m, "aaaaaaaaaa", 0);
+        Document doc = new Document(m, "aaaaaaaaaa");
 
         if(getBit(i, 0)) {
             inAA.addInput(doc, 0, 6);

@@ -46,7 +46,7 @@ public class NextWordTest {
                         .setRelation(END_EQUALS)
         );
 
-        Document doc = new Document(m, "aaaa bbbb  ", 0);
+        Document doc = new Document(m, "aaaa bbbb  ");
 
         inA.addInput(doc, 0, 5);
         inB.addInput(doc, 5, 10);
