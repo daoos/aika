@@ -23,7 +23,8 @@ import network.aika.neuron.INeuron.Type;
 import network.aika.neuron.Neuron;
 import network.aika.Provider.SuspensionMode;
 import network.aika.neuron.Synapse;
-import network.aika.neuron.activation.search.SearchNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -46,7 +47,11 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Model {
 
+    private static final Logger log = LoggerFactory.getLogger(Model.class);
+
+
     public int numberOfThreads = 1;
+    public int numberOfAvailableThreads = numberOfThreads;
 
     public int[] lastCleanup;
 
@@ -77,10 +82,58 @@ public class Model {
     public Model(SuspensionHook sh, int numberOfThreads) {
         assert numberOfThreads >= 1;
         this.numberOfThreads = numberOfThreads;
+        this.numberOfAvailableThreads = numberOfThreads;
 
         lastCleanup = new int[numberOfThreads];
         docs = new Document[numberOfThreads];
         suspensionHook = sh;
+    }
+
+
+    public synchronized void acquireThread(Document doc) {
+        if(numberOfAvailableThreads == 0) {
+            dumpThreadState();
+        }
+
+        try {
+            while (numberOfAvailableThreads == 0) {
+                wait();
+            }
+        } catch(InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for(int i = 0; i < docs.length; i++) {
+            if(docs[i] == null) {
+                docs[i] = doc;
+                doc.threadId = i;
+                break;
+            }
+        }
+
+        numberOfAvailableThreads--;
+    }
+
+
+    public synchronized void releaseThread(Document doc) {
+        int oldNOAT = numberOfAvailableThreads;
+
+        docs[doc.threadId] = null;
+        doc.threadId = null;
+        numberOfAvailableThreads++;
+
+        if(oldNOAT == 0) {
+            notify();
+        }
+    }
+
+
+    public void dumpThreadState() {
+        log.warn("numberOfAvailableThreads: " + numberOfAvailableThreads);
+        for(int i = 0; i < docs.length; i++) {
+            Document doc =  docs[i];
+            log.warn("ThreadId: " + i + (doc != null ? " DocId:" + doc.getId() + " Time alive:" + (System.currentTimeMillis() - doc.startTime) : " - "));
+        }
     }
 
 
@@ -141,13 +194,6 @@ public class Model {
         return docIdCounter.addAndGet(1);
     }
 
-
-    public void acquireThread(int threadId, Document doc) {
-        if (docs[threadId] != null) {
-            throw new StaleDocumentException();
-        }
-        docs[threadId] = doc;
-    }
 
 
     public Collection<Neuron> getActiveNeurons() {

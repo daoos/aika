@@ -55,7 +55,6 @@ public class Document implements Comparable<Document> {
 
     public static int CLEANUP_INTERVAL = 500;
     public static int MAX_ROUND = 20;
-    public static int ROUND_LIMIT = -1;
 
     private final int id;
     private final StringBuilder content;
@@ -68,7 +67,9 @@ public class Document implements Comparable<Document> {
     public int positionIdCounter = 0;
 
     private Model model;
-    private int threadId;
+    Integer threadId;
+
+    long startTime;
 
     private NodeQueue nodeQueue = new NodeQueue(this);
     private ValueQueue valueQueue = new ValueQueue();
@@ -138,24 +139,20 @@ public class Document implements Comparable<Document> {
 
 
     public Document(Model model, String content) {
-        this(model, content, 0);
+        this(model, model.getNewDocumentId(), content);
     }
 
 
-    public Document(Model model, String content, int threadId) {
-        this(model, model.getNewDocumentId(), content, threadId);
-    }
-
-
-    public Document(Model model, int id, String content, int threadId) {
+    public Document(Model model, int id, String content) {
         this.id = id;
         this.content = new StringBuilder(content);
 
         this.model = model;
-        this.threadId = threadId;
         this.linker = initLinker();
 
-        model.acquireThread(threadId, this);
+        this.startTime = System.currentTimeMillis();
+
+        model.acquireThread(this);
     }
 
 
@@ -517,6 +514,8 @@ public class Document implements Comparable<Document> {
         }
 
         model.docs[threadId] = null;
+
+        model.releaseThread(this);
     }
 
 
