@@ -486,6 +486,10 @@ public class Document implements Comparable<Document> {
      * Removes the activations of this document from the model again.
      */
     public void clearActivations() {
+        if(threadId == null) {
+            return;
+        }
+
         activatedNeurons.forEach(n -> n.clearActivations(this));
         activatedNodes.forEach(n -> n.clearActivations(this));
 
