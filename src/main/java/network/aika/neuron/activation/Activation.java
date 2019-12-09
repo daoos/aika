@@ -428,7 +428,9 @@ public class Activation implements Comparable<Activation> {
 
         Integer fired = null;
 
-        for (InputState is: getInputStates(sn)) {
+        Decision d = getNextDecision(currentOption, sn);
+
+        for (InputState is: getInputStates(d)) {
             Synapse s = is.l.getSynapse();
             Activation iAct = is.l.getInput();
 
@@ -526,7 +528,7 @@ public class Activation implements Comparable<Activation> {
     }
 
 
-    private List<InputState> getInputStates(SearchNode sn) {
+    private List<InputState> getInputStates(Decision d) {
         ArrayList<InputState> tmp = new ArrayList<>();
         Synapse lastSynapse = null;
         InputState maxInputState = null;
@@ -539,7 +541,7 @@ public class Activation implements Comparable<Activation> {
                 maxInputState = null;
             }
 
-            State s = l.getInput().getInputState(l.getSynapse(), this, sn);
+            State s = l.getInput().getInputState(l.getSynapse(), this, d);
             if (maxInputState == null || maxInputState.s.value < s.value) {
                 maxInputState = new InputState(l, s);
             }
@@ -578,7 +580,7 @@ public class Activation implements Comparable<Activation> {
     }
 
 
-    private State getInputState(Synapse s, Activation act, SearchNode sn) {
+    private State getInputState(Synapse s, Activation act, Decision d) {
         State is = currentOption.getState();
 
         if(s.isNegative(CURRENT)) {
@@ -592,10 +594,9 @@ public class Activation implements Comparable<Activation> {
         if(act.getType() == INHIBITORY) {
             return is;
         } else {
-            Decision nd = act.getNextDecision(act.currentOption, sn);
-            if (nd == SELECTED) {
+            if (d == SELECTED) {
                 return new State(is.ub, is.ub, 0.0, 0, 0.0);
-            } else if (nd == EXCLUDED) {
+            } else if (d == EXCLUDED) {
                 return new State(is.value, is.value, 0.0, 0, 0.0);
             }
         }
