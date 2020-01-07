@@ -149,7 +149,7 @@ public class SuspensionTest {
         }
 
         @Override
-        public void store(int id, byte[] data) {
+        public void store(int id, String label, byte[] data) {
             storage.put(id, data);
         }
 
