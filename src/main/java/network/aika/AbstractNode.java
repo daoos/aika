@@ -48,6 +48,10 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
 
     public void reactivate() {}
 
+    public String getLabel() {
+        return null;
+    }
+
     public static <P extends Provider> AbstractNode read(DataInput in, P p) throws IOException {
         AbstractNode n;
         if(in.readBoolean()) {

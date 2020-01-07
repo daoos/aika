@@ -31,7 +31,7 @@ public interface SuspensionHook {
 
     int getNewId();
 
-    void store(int id, byte[] data);
+    void store(int id, String label, byte[] data);
 
     byte[] retrieve(int id);
 

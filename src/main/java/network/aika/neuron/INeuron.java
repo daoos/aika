@@ -142,6 +142,7 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         return provider.getId();
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
