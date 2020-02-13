@@ -77,7 +77,14 @@ public class MultiRelation extends Relation {
 
 
     public void addRelation(Relation r) {
-        relations.put(r, r);
+        if(r instanceof MultiRelation) {
+            MultiRelation mr = (MultiRelation) r;
+            for(Relation rel: mr.relations.values()) {
+                relations.put(rel, rel);
+            }
+        } else {
+            relations.put(r, r);
+        }
     }
 
 
