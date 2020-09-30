@@ -180,6 +180,11 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         return inputSynapses.values();
     }
 
+    public void addModelLabel(String modelLabel) {
+        super.addModelLabel(modelLabel);
+
+        inputNode.get().addModelLabel(modelLabel);
+    }
 
     public Synapse getMaxInputSynapse(Synapse.State state) {
         if(type != EXCITATORY) {
