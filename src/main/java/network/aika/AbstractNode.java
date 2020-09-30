@@ -23,6 +23,8 @@ import network.aika.neuron.Neuron;
 
 import java.io.DataInput;
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -35,6 +37,15 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
     public volatile boolean modified;
 
     protected P provider;
+
+    private Set<String> modelLabels;
+
+    public Set<String> getModelLabels() {
+        if(modelLabels == null) {
+            modelLabels = new TreeSet<>();
+        }
+        return modelLabels;
+    }
 
     public P getProvider() {
         return provider;
