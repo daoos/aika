@@ -47,6 +47,10 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
         return modelLabels;
     }
 
+    public void addModelLabel(String modelLabel) {
+        getModelLabels().add(modelLabel);
+    }
+
     public P getProvider() {
         return provider;
     }
