@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -149,7 +150,7 @@ public class SuspensionTest {
         }
 
         @Override
-        public void store(int id, String label, byte[] data) {
+        public void store(int id, String label, Set<String> modelLabels, byte[] data) {
             storage.put(id, data);
         }
 

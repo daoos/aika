@@ -17,6 +17,8 @@
 package network.aika;
 
 
+import java.util.Set;
+
 /**
  *
  * The suspension hook is used to suspend neurons and logic nodes to an external storage in order to reduce the memory footprint.
@@ -31,7 +33,7 @@ public interface SuspensionHook {
 
     int getNewId();
 
-    void store(int id, String label, byte[] data);
+    void store(int id, String label, Set<String> modelLabels, byte[] data);
 
     byte[] retrieve(int id);
 

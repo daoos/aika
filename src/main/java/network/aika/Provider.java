@@ -118,14 +118,14 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try (
                     GZIPOutputStream gzipos = new GZIPOutputStream(baos);
-                    DataOutputStream dos = new DataOutputStream(gzipos);) {
+                    DataOutputStream dos = new DataOutputStream(gzipos)) {
 
                 n.write(dos);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            model.suspensionHook.store(id, n.getLabel(), baos.toByteArray());
+            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), baos.toByteArray());
         }
         n.modified = false;
     }
@@ -138,7 +138,7 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         try (
                 GZIPInputStream gzipis = new GZIPInputStream(bais);
-                DataInputStream dis = new DataInputStream(gzipis);) {
+                DataInputStream dis = new DataInputStream(gzipis)) {
             n = (T) AbstractNode.read(dis, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -152,7 +152,12 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
     @Override
     public boolean equals(Object o) {
-        return id == ((Provider<?>) o).id;
+        if(o == this) return true;
+
+        if(o instanceof Provider<?>) {
+            return ((Provider<?>) o).id.equals(id);
+        }
+        return false;
     }
 
 
@@ -166,10 +171,7 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         return "p(" + id + ":" + (n != null ? n.toString() : "SUSPENDED") + ")";
     }
 
-
     public int compareTo(Provider<?> n) {
-        if (id < n.id) return -1;
-        else if (id > n.id) return 1;
-        else return 0;
+        return id.compareTo(n.id);
     }
 }
