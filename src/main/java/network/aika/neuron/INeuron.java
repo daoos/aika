@@ -567,6 +567,8 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
     public void write(DataOutput out) throws IOException {
         out.writeBoolean(true);
 
+        super.write(out);
+
         out.writeBoolean(label != null);
         if(label != null) {
             out.writeUTF(label);
@@ -631,6 +633,8 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
 
     @Override
     public void readFields(DataInput in, Model m) throws IOException {
+        super.readFields(in, m);
+
         if(in.readBoolean()) {
             label = in.readUTF();
         }
