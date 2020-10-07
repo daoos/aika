@@ -28,9 +28,7 @@ import network.aika.neuron.relation.Relation;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -234,4 +232,84 @@ public class SuspensionTest {
         Assert.assertEquals(2, nC.get().getInputSynapses().size());
     }
 
+
+    @Test
+    public void testSuspendAndNeuronWithDeletion() {
+        Model m = new Model(new DummySuspensionHook(), 1);
+
+        Neuron inA = m.createNeuron("A", INPUT);
+        Neuron inB = m.createNeuron("B", INPUT);
+
+        inA.get().addModelLabel("InputModel");
+        inB.get().addModelLabel("InputModel");
+
+        int idA = inA.getId();
+        int idB = inB.getId();
+
+        Neuron nC = Neuron.init(m.createNeuron("C", EXCITATORY),
+                5.0,
+                new Synapse.Builder()
+                        .setSynapseId(0)
+                        .setNeuron(inA)
+                        .setWeight(10.0)
+                        .setRecurrent(false),
+                new Synapse.Builder()
+                        .setSynapseId(1)
+                        .setNeuron(inB)
+                        .setWeight(10.0)
+                        .setRecurrent(false),
+                new Relation.Builder()
+                        .setFrom(0)
+                        .setTo(1)
+                        .setRelation(END_TO_BEGIN_EQUALS),
+                new Relation.Builder()
+                        .setFrom(0)
+                        .setTo(OUTPUT)
+                        .setRelation(BEGIN_EQUALS),
+                new Relation.Builder()
+                        .setFrom(1)
+                        .setTo(OUTPUT)
+                        .setRelation(END_EQUALS)
+        );
+
+        nC.get().addModelLabel("TestModel");
+
+        Neuron outD = Neuron.init(m.createNeuron("D", EXCITATORY),
+                6.0,
+                new Synapse.Builder()
+                        .setSynapseId(0)
+                        .setNeuron(nC)
+                        .setWeight(10.0)
+                        .setRecurrent(false),
+                new Relation.Builder()
+                        .setFrom(0)
+                        .setTo(OUTPUT)
+                        .setRelation(EQUALS)
+        );
+
+        outD.get().addModelLabel("OutputModel");
+
+
+        m.suspendAll(Provider.SuspensionMode.SAVE);
+
+        nC.delete(Collections.singleton("TestModel"));
+
+        Assert.assertTrue(outD.isSuspended());
+
+        // Reactivate
+
+        Document doc = new Document(m, "Bla");
+
+        inA = m.lookupNeuron(idA);
+        inA.addInput(doc, 0, 1);
+
+        inB = m.lookupNeuron(idB);
+        inB.addInput(doc, 1, 2);
+
+        doc.process();
+
+        System.out.println(doc.activationsToString());
+
+        Assert.assertFalse(outD.getActivations(doc, true).collect(Collectors.toList()).isEmpty());
+    }
 }

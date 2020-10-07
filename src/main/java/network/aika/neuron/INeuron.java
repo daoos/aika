@@ -739,7 +739,7 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
 
     @Override
     public void delete(Set<String> modelLabels) {
-        getInputSynapses()
+        new ArrayList<>(getInputSynapses())
                 .forEach(s -> {
                     s.unlink();
                     s.getInput().delete(modelLabels);
