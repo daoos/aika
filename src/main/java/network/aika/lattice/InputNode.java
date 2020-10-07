@@ -264,4 +264,9 @@ public class InputNode extends Node<InputNode, InputActivation> {
             inputNeuron = m.lookupNeuron(in.readInt());
         }
     }
+
+    @Override
+    public void delete(Set<String> modelLabels) {
+
+    }
 }

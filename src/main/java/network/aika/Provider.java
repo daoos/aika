@@ -1,8 +1,12 @@
 package network.aika;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.lang.ref.WeakReference;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -11,6 +15,8 @@ import java.util.zip.GZIPOutputStream;
  * @author Lukas Molzberger
  */
 public class Provider<T extends AbstractNode> implements Comparable<Provider<?>> {
+
+    private static final Logger log = LoggerFactory.getLogger(Provider.class);
 
     protected Model model;
     protected Integer id;
@@ -149,6 +155,19 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         model.register(this);
     }
 
+    public void delete(Set<String> modelLabels) {
+        get();
+
+        n.getModelLabels().removeAll(modelLabels);
+
+        if(!n.getModelLabels().isEmpty()) {
+            return;
+        }
+
+        n.delete(modelLabels);
+
+        model.suspensionHook.delete(id);
+    }
 
     @Override
     public boolean equals(Object o) {

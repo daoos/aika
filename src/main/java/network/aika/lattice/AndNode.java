@@ -99,6 +99,24 @@ public class AndNode extends Node<AndNode, AndActivation> {
 
 
     @Override
+    public void delete(Set<String> modelLabels) {
+        for(Entry e: parents) {
+            Provider<? extends Node> pp = e.rv.parent;
+            Node pn = pp.get();
+            pn.lock.acquireWriteLock();
+            pn.removeAndChild(e.ref);
+            pn.setModified();
+            pn.lock.releaseWriteLock();
+            pp.delete(modelLabels);
+        }
+
+        for(Entry e: parents) {
+            e.rv.parent.get().cleanup();
+        }
+    }
+
+
+    @Override
     public void cleanup() {
         if(!isRemoved && !isRequired()) {
             remove();

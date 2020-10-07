@@ -212,19 +212,33 @@ public class OrNode extends Node<OrNode, OrActivation> {
     }
 
 
-    void remove(int threadId) {
+    @Override
+    public void delete(Set<String> modelLabels) {
         outputNeuron.get().remove();
 
         super.remove();
 
         try {
             lock.acquireReadLock();
-            removeParents(threadId);
+            removeParents(modelLabels);
         } finally {
             lock.releaseReadLock();
         }
     }
 
+
+    void removeParents(Set<String> modelLabels) {
+        for (OrEntry oe : andParents) {
+            Provider<? extends Node> pp = oe.parent;
+            Node pn = pp.get();
+            pn.changeNumberOfNeuronRefs(provider.getModel().defaultThreadId, provider.getModel().visitedCounter.addAndGet(1), -1);
+            pn.removeOrChild(oe);
+            pn.setModified();
+
+            pp.delete(modelLabels);
+        }
+        andParents.clear();
+    }
 
     void removeParents(int threadId) {
         for (OrEntry oe : andParents) {

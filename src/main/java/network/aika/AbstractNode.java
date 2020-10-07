@@ -77,4 +77,6 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
         return n;
     }
 
+    public abstract void delete(Set<String> modelLabels);
+
 }

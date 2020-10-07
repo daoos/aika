@@ -732,6 +732,18 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         }
     }
 
+
+    @Override
+    public void delete(Set<String> modelLabels) {
+        getInputSynapses()
+                .forEach(s -> {
+                    s.unlink();
+                    s.getInput().delete(modelLabels);
+                });
+
+        inputNode.delete(modelLabels);
+    }
+
     public void setBias(double b) {
         biasDelta = b - bias;
     }
