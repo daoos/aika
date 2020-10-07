@@ -401,6 +401,8 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
 
     @Override
     public void write(DataOutput out) throws IOException {
+        super.write(out);
+
         out.writeInt(level);
 
         out.writeInt(numberOfNeuronRefs.get());
@@ -428,6 +430,8 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
 
     @Override
     public void readFields(DataInput in, Model m) throws IOException {
+        super.readFields(in, m);
+
         level = in.readInt();
 
         numberOfNeuronRefs.set(in.readInt());

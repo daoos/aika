@@ -22,6 +22,7 @@ import network.aika.neuron.INeuron;
 import network.aika.neuron.Neuron;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
@@ -65,6 +66,24 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
 
     public String getLabel() {
         return null;
+    }
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        if(modelLabels != null) {
+            for (String modelLabel: modelLabels) {
+                out.writeBoolean(true);
+                out.writeUTF(modelLabel);
+            }
+        }
+        out.writeBoolean(false);
+    }
+
+    @Override
+    public void readFields(DataInput in, Model m) throws IOException {
+        while(in.readBoolean()) {
+            getModelLabels().add(in.readUTF());
+        }
     }
 
     public static <P extends Provider> AbstractNode read(DataInput in, P p) throws IOException {
