@@ -746,6 +746,13 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
                 });
 
         inputNode.delete(modelLabels);
+
+        Provider on = getOutputNode();
+        if(on != null && !on.get().getModelLabels().isEmpty()) {
+            on.get().getModelLabels().forEach(ml ->
+                log.warn("Dependend model: " + ml)
+            );
+        }
     }
 
     public void setBias(double b) {

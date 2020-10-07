@@ -119,17 +119,7 @@ public class SuspensionTest {
 
         // Reactivate
 
-        Document doc = new Document(m, "Bla");
-
-        inA = m.lookupNeuron(idA);
-        inA.addInput(doc, 0, 1);
-
-        inB = m.lookupNeuron(idB);
-        inB.addInput(doc, 1, 2);
-
-        doc.process();
-
-        System.out.println(doc.activationsToString());
+        Document doc = processTestDocument(m, idA, idB);
 
         Assert.assertFalse(outD.getActivations(doc, true).collect(Collectors.toList()).isEmpty());
     }
@@ -246,33 +236,7 @@ public class SuspensionTest {
         int idA = inA.getId();
         int idB = inB.getId();
 
-        Neuron nC = Neuron.init(m.createNeuron("C", EXCITATORY),
-                5.0,
-                new Synapse.Builder()
-                        .setSynapseId(0)
-                        .setNeuron(inA)
-                        .setWeight(10.0)
-                        .setRecurrent(false),
-                new Synapse.Builder()
-                        .setSynapseId(1)
-                        .setNeuron(inB)
-                        .setWeight(10.0)
-                        .setRecurrent(false),
-                new Relation.Builder()
-                        .setFrom(0)
-                        .setTo(1)
-                        .setRelation(END_TO_BEGIN_EQUALS),
-                new Relation.Builder()
-                        .setFrom(0)
-                        .setTo(OUTPUT)
-                        .setRelation(BEGIN_EQUALS),
-                new Relation.Builder()
-                        .setFrom(1)
-                        .setTo(OUTPUT)
-                        .setRelation(END_EQUALS)
-        );
-
-        nC.get().addModelLabel("TestModel");
+        Neuron nC = initNeuronC(m, inA, inB);
 
         Neuron outD = Neuron.init(m.createNeuron("D", EXCITATORY),
                 6.0,
@@ -298,6 +262,24 @@ public class SuspensionTest {
 
         // Reactivate
 
+        Document doc = processTestDocument(m, idA, idB);
+
+        Assert.assertTrue(outD.getActivations(doc, true).collect(Collectors.toList()).isEmpty());
+
+        Neuron nCNew = initNeuronC(m, inA, inB);
+
+        Assert.assertNotEquals(nC.getId(), nCNew.getId());
+
+        doc.clearActivations();
+
+        doc = processTestDocument(m, idA, idB);
+
+        Assert.assertFalse(nCNew.getActivations(doc, true).collect(Collectors.toList()).isEmpty());
+    }
+
+    public Document processTestDocument(Model m, int idA, int idB) {
+        Neuron inA;
+        Neuron inB;
         Document doc = new Document(m, "Bla");
 
         inA = m.lookupNeuron(idA);
@@ -309,7 +291,37 @@ public class SuspensionTest {
         doc.process();
 
         System.out.println(doc.activationsToString());
+        return doc;
+    }
 
-        Assert.assertFalse(outD.getActivations(doc, true).collect(Collectors.toList()).isEmpty());
+    public Neuron initNeuronC(Model m, Neuron inA, Neuron inB) {
+        Neuron nC = Neuron.init(m.createNeuron("C", EXCITATORY),
+                5.0,
+                new Synapse.Builder()
+                        .setSynapseId(0)
+                        .setNeuron(inA)
+                        .setWeight(10.0)
+                        .setRecurrent(false),
+                new Synapse.Builder()
+                        .setSynapseId(1)
+                        .setNeuron(inB)
+                        .setWeight(10.0)
+                        .setRecurrent(false),
+                new Builder()
+                        .setFrom(0)
+                        .setTo(1)
+                        .setRelation(END_TO_BEGIN_EQUALS),
+                new Builder()
+                        .setFrom(0)
+                        .setTo(OUTPUT)
+                        .setRelation(BEGIN_EQUALS),
+                new Builder()
+                        .setFrom(1)
+                        .setTo(OUTPUT)
+                        .setRelation(END_EQUALS)
+        );
+
+        nC.get().addModelLabel("TestModel");
+        return nC;
     }
 }
