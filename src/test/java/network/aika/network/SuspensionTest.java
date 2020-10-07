@@ -160,6 +160,11 @@ public class SuspensionTest {
         }
 
         @Override
+        public void delete(int id) {
+            storage.remove(id);
+        }
+
+        @Override
         public Iterable<Integer> getAllNodeIds() {
             return storage.keySet();
         }
