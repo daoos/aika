@@ -33,7 +33,7 @@ public interface SuspensionHook {
 
     int getNewId();
 
-    void store(int id, String label, Set<String> modelLabels, byte[] data);
+    void store(int id, String label, Set<String> modelLabels, boolean isNeuron, byte[] data);
 
     byte[] retrieve(int id);
 

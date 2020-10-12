@@ -138,7 +138,7 @@ public class SuspensionTest {
         }
 
         @Override
-        public void store(int id, String label, Set<String> modelLabels, byte[] data) {
+        public void store(int id, String label, Set<String> modelLabels, boolean isNeuron, byte[] data) {
             storage.put(id, data);
         }
 

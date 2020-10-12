@@ -1,6 +1,8 @@
 package network.aika;
 
 
+import network.aika.neuron.INeuron;
+import network.aika.neuron.Neuron;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +133,7 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
                 throw new RuntimeException(e);
             }
 
-            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), baos.toByteArray());
+            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), n instanceof INeuron, baos.toByteArray());
         }
         n.modified = false;
     }
