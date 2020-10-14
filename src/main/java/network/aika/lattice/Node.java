@@ -298,7 +298,9 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
 
 
     public void remove() {
-        assert !isRemoved;
+        if(isRemoved) {
+            return;
+        }
 
         lock.acquireWriteLock();
         setModified();

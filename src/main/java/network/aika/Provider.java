@@ -25,6 +25,8 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
     private volatile T n;
 
+    private boolean markedDeleted;
+
 
     public enum SuspensionMode {
         SAVE,
@@ -168,7 +170,13 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
         n.delete(modelLabels);
 
-        model.suspensionHook.delete(id);
+//        model.removeProvider(this);
+        model.suspensionHook.delete(n.getLabel(), id);
+        markedDeleted = true;
+    }
+
+    public boolean isMarkedDeleted() {
+        return markedDeleted;
     }
 
     @Override

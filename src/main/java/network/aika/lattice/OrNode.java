@@ -235,7 +235,7 @@ public class OrNode extends Node<OrNode, OrActivation> {
             pn.removeOrChild(oe);
             pn.setModified();
 
-            pp.delete(modelLabels);
+//            pp.delete(modelLabels);
         }
         andParents.clear();
     }

@@ -148,7 +148,7 @@ public class SuspensionTest {
         }
 
         @Override
-        public void delete(int id) {
+        public void delete(String label, int id) {
             storage.remove(id);
         }
 
