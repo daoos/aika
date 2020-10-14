@@ -91,7 +91,10 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
     public synchronized T get(int lastUsedDocumentId) {
         T n = get();
-        n.lastUsedDocumentId = Math.max(n.lastUsedDocumentId, lastUsedDocumentId);
+
+        if(n != null) {
+            n.lastUsedDocumentId = Math.max(n.lastUsedDocumentId, lastUsedDocumentId);
+        }
         return n;
     }
 
@@ -145,6 +148,12 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         assert model.suspensionHook != null;
 
         byte[] data = model.suspensionHook.retrieve(id);
+        if(data == null) {
+            log.warn("Tried to reactivate deleted node!");
+            markedDeleted = true;
+            return;
+        }
+
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         try (
                 GZIPInputStream gzipis = new GZIPInputStream(bais);
