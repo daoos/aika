@@ -131,7 +131,7 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
                 throw new RuntimeException(e);
             }
 
-            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), baos.toByteArray());
+            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), n.isNeuron(), baos.toByteArray());
         }
         n.modified = false;
     }

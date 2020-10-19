@@ -17,8 +17,6 @@
 package network.aika;
 
 import network.aika.lattice.Node;
-import network.aika.lattice.NodeActivation;
-import network.aika.neuron.INeuron;
 import network.aika.neuron.Neuron;
 
 import java.io.DataInput;
@@ -98,4 +96,5 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
 
     public abstract void delete(Set<String> modelLabels);
 
+    public abstract boolean isNeuron();
 }

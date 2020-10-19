@@ -18,15 +18,17 @@ package network.aika.neuron;
 
 
 import network.aika.*;
+import network.aika.lattice.InputNode;
 import network.aika.lattice.OrNode;
 import network.aika.neuron.activation.Activation;
 import network.aika.neuron.activation.Position;
-import network.aika.lattice.InputNode;
 import network.aika.neuron.relation.Relation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -748,11 +750,16 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         inputNode.delete(modelLabels);
 
         Provider on = getOutputNode();
-        if(on != null && !on.get().getModelLabels().isEmpty()) {
+        if (on != null && !on.get().getModelLabels().isEmpty()) {
             on.get().getModelLabels().forEach(ml ->
-                log.warn("Dependend model: " + ml)
+                    log.warn("Dependend model: " + ml)
             );
         }
+    }
+
+    @Override
+    public boolean isNeuron() {
+        return true;
     }
 
     public void setBias(double b) {

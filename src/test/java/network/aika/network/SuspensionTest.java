@@ -23,12 +23,14 @@ import network.aika.Provider;
 import network.aika.SuspensionHook;
 import network.aika.neuron.Neuron;
 import network.aika.neuron.Synapse;
-import network.aika.neuron.INeuron;
 import network.aika.neuron.relation.Relation;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -138,7 +140,7 @@ public class SuspensionTest {
         }
 
         @Override
-        public void store(int id, String label, Set<String> modelLabels, byte[] data) {
+        public void store(int id, String label, Set<String> modelLabels, boolean isNeuron, byte[] data) {
             storage.put(id, data);
         }
 

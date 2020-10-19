@@ -18,12 +18,13 @@ package network.aika.lattice;
 
 
 import network.aika.*;
-import network.aika.Document;
 import network.aika.lattice.refinement.OrEntry;
 import network.aika.lattice.refinement.RefValue;
 import network.aika.lattice.refinement.Refinement;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -471,5 +472,10 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
 
         n.readFields(in, p.getModel());
         return n;
+    }
+
+    @Override
+    public boolean isNeuron() {
+        return false;
     }
 }
