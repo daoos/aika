@@ -37,7 +37,7 @@ public interface SuspensionHook {
 
     byte[] retrieve(int id);
 
-    void delete(int id);
+    void delete(String label, int id);
 
     Iterable<Integer> getAllNodeIds();
 }

@@ -1,6 +1,8 @@
 package network.aika;
 
 
+import network.aika.neuron.INeuron;
+import network.aika.neuron.Neuron;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,8 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
     protected Integer id;
 
     private volatile T n;
+
+    private boolean markedDeleted;
 
 
     public enum SuspensionMode {
@@ -87,7 +91,10 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
     public synchronized T get(int lastUsedDocumentId) {
         T n = get();
-        n.lastUsedDocumentId = Math.max(n.lastUsedDocumentId, lastUsedDocumentId);
+
+        if(n != null) {
+            n.lastUsedDocumentId = Math.max(n.lastUsedDocumentId, lastUsedDocumentId);
+        }
         return n;
     }
 
@@ -141,6 +148,12 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         assert model.suspensionHook != null;
 
         byte[] data = model.suspensionHook.retrieve(id);
+        if(data == null) {
+            log.warn("Tried to reactivate deleted node!");
+            markedDeleted = true;
+            return;
+        }
+
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         try (
                 GZIPInputStream gzipis = new GZIPInputStream(bais);
@@ -166,7 +179,13 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
         n.delete(modelLabels);
 
-        model.suspensionHook.delete(id);
+//        model.removeProvider(this);
+        model.suspensionHook.delete(n.getLabel(), id);
+        markedDeleted = true;
+    }
+
+    public boolean isMarkedDeleted() {
+        return markedDeleted;
     }
 
     @Override

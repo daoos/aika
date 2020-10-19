@@ -85,6 +85,7 @@ public class OrNode extends Node<OrNode, OrActivation> {
 
         Document doc = inputAct.getDocument();
         INeuron n = outputNeuron.get(doc);
+        if(n == null) return;
 
         Activation act = lookupActivation(ol, l -> {
             Synapse s = l.getSynapse();
@@ -135,9 +136,12 @@ public class OrNode extends Node<OrNode, OrActivation> {
                                 .orElse(null);
                     }
                 } else {
+                    INeuron n = outputNeuron.get();
+                    if(n == null) return null;
+
                     existingAct = rel
                             .invert()
-                            .getActivations(outputNeuron.get(), l.getInput())
+                            .getActivations(n, l.getInput())
                             .findFirst()
                             .orElse(null);
                 }
@@ -235,7 +239,7 @@ public class OrNode extends Node<OrNode, OrActivation> {
             pn.removeOrChild(oe);
             pn.setModified();
 
-            pp.delete(modelLabels);
+//            pp.delete(modelLabels);
         }
         andParents.clear();
     }

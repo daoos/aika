@@ -266,7 +266,10 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
             lock.acquireReadLock();
             if (orChildren != null) {
                 for (OrEntry oe : orChildren) {
-                    oe.child.get(doc).addActivation(oe, inputAct);
+                    OrNode on = oe.child.get(doc);
+                    if(on != null) {
+                        on.addActivation(oe, inputAct);
+                    }
                 }
             }
         } finally {
@@ -299,7 +302,9 @@ public abstract class Node<T extends Node, A extends NodeActivation<T>> extends 
 
 
     public void remove() {
-        assert !isRemoved;
+        if(isRemoved) {
+            return;
+        }
 
         lock.acquireWriteLock();
         setModified();

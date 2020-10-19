@@ -47,7 +47,9 @@ public abstract class AbstractNode<P extends Provider<? extends AbstractNode>> i
     }
 
     public void addModelLabel(String modelLabel) {
-        getModelLabels().add(modelLabel);
+        if(modelLabel != null) {
+            getModelLabels().add(modelLabel);
+        }
     }
 
     public P getProvider() {
