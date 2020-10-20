@@ -65,15 +65,6 @@ public class OrNode extends Node<OrNode, OrActivation> {
         super(m, -1); // Or-node activations always need to be processed first!
     }
 
-    public void addModelLabel(String modelLabel) {
-        super.addModelLabel(modelLabel);
-
-        andParents.forEach(e ->
-                e.parent.get().addModelLabel(modelLabel)
-        );
-    }
-
-
     @Override
     public RefValue expand(int threadId, Document doc, Refinement ref) {
         throw new UnsupportedOperationException();

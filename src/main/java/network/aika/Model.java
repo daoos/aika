@@ -71,6 +71,7 @@ public class Model {
     public int defaultThreadId = 0;
     public static AtomicLong visitedCounter = new AtomicLong(1);
 
+    public ModelLabelCallback modelLabelCallback;
     /**
      * Creates a model with a single thread.
      */
@@ -89,6 +90,14 @@ public class Model {
         suspensionHook = sh;
     }
 
+
+    public ModelLabelCallback getModelLabelCallback() {
+        return modelLabelCallback;
+    }
+
+    public void setModelLabelCallback(ModelLabelCallback modelLabelCallback) {
+        this.modelLabelCallback = modelLabelCallback;
+    }
 
     public synchronized void acquireThread(Document doc) {
         if(numberOfAvailableThreads == 0) {
@@ -306,6 +315,8 @@ public class Model {
             providers.remove(p.id);
         }
     }
+
+
 
 
     public static class StaleDocumentException extends RuntimeException {

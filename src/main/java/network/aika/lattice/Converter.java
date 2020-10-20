@@ -16,7 +16,9 @@
  */
 package network.aika.lattice;
 
+import network.aika.AbstractNode;
 import network.aika.Document;
+import network.aika.Model;
 import network.aika.lattice.refinement.RefValue;
 import network.aika.lattice.refinement.Refinement;
 import network.aika.lattice.refinement.RelationsMap;
@@ -52,6 +54,7 @@ public class Converter {
 
     private int threadId;
     private INeuron neuron;
+    private Model model;
     private Document doc;
     private OrNode outputNode;
     private Collection<Synapse> modifiedSynapses;
@@ -65,13 +68,18 @@ public class Converter {
     private Converter(int threadId, Document doc, INeuron neuron, Collection<Synapse> modifiedSynapses) {
         this.doc = doc;
         this.neuron = neuron;
+        this.model = neuron.getModel();
         this.threadId = threadId;
         this.modifiedSynapses = modifiedSynapses;
     }
 
 
     private boolean convert() {
+        setModelLabel(neuron);
+
         outputNode = neuron.getInputNode().get();
+
+        setModelLabel(outputNode);
 
         SynapseSummary ss = neuron.getSynapseSummary();
 
@@ -97,6 +105,12 @@ public class Converter {
         }
 
         return true;
+    }
+
+    private void setModelLabel(AbstractNode n) {
+        if (model.getModelLabelCallback() != null) {
+            n.addModelLabel(model.getModelLabelCallback().getCurrentModelLabel());
+        }
     }
 
 
@@ -194,6 +208,7 @@ public class Converter {
         for (Synapse s : modifiedSynapses) {
             if (!s.isRecurrent() && !s.isWeak(CURRENT)) {
                 NodeContext nlNodeContext = expandNode(null, s);
+
                 outputNode.addInput(nlNodeContext.getSynapseIds(), threadId, nlNodeContext.node, false);
             }
         }
@@ -243,11 +258,19 @@ public class Converter {
         return maxSyn;
     }
 
-
     private NodeContext expandNode(NodeContext nc, Synapse s) {
+        NodeContext nln = expandNodeInternal(nc, s);
+        if(nln != null) {
+            setModelLabel(nln.node);
+        }
+        return nln;
+    }
+
+    private NodeContext expandNodeInternal(NodeContext nc, Synapse s) {
         if (nc == null) {
             NodeContext nln = new NodeContext();
             nln.node = s.getInput().get().getOutputNode().get();
+
             nln.offsets = new Synapse[] {s};
             return nln;
         } else {
@@ -275,6 +298,8 @@ public class Converter {
                     nln.offsets[i] = s;
                 }
             }
+
+
             return nln;
         }
     }

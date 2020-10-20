@@ -69,14 +69,6 @@ public class AndNode extends Node<AndNode, AndActivation> {
         }
     }
 
-    public void addModelLabel(String modelLabel) {
-        super.addModelLabel(modelLabel);
-
-        parents.forEach(e ->
-                e.rv.parent.get().addModelLabel(modelLabel)
-        );
-    }
-
     @Override
     protected void propagate(AndActivation act) {
         if (andChildren != null) {
