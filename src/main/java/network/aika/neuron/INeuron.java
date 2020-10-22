@@ -402,6 +402,15 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         OrNode node = new OrNode(m);
         InputNode iNode = new InputNode(m);
 
+        if(m.getModelLabelCallback() != null) {
+            String ml = m.getModelLabelCallback().getCurrentModelLabel();
+            if(ml != null) {
+                getModelLabels().add(ml);
+                node.getModelLabels().add(ml);
+                iNode.getModelLabels().add(ml);
+            }
+        }
+
         node.setOutputNeuron(provider);
         inputNode = node.getProvider();
 
