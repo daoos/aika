@@ -217,6 +217,14 @@ public abstract class Relation implements Comparable<Relation>, Writable {
         protected Relation relation;
 
 
+        public int getFrom() {
+            return from;
+        }
+
+        public int getTo() {
+            return to;
+        }
+
         /**
          * This parameter allows to specify whether the relations connected to thy synapse refer to the activation of the
          * input neuron (that's the default) or if the should refer to one of the input activations of the input neuron.

@@ -487,6 +487,10 @@ public class Synapse implements Writable {
         private Integer synapseId;
 
 
+        public Integer getSynapseId() {
+            return synapseId;
+        }
+
         /**
          * The property <code>recurrent</code> specifies if input is a recurrent feedback link. Recurrent
          * feedback links can be either negative or positive depending on the weight of the synapse. Recurrent feedback links
