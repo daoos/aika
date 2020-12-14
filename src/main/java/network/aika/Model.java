@@ -33,6 +33,8 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 /**
@@ -72,6 +74,9 @@ public class Model {
     public static AtomicLong visitedCounter = new AtomicLong(1);
 
     public ModelLabelCallback modelLabelCallback;
+
+
+    public Supplier<Writable> dataSupplier;
     /**
      * Creates a model with a single thread.
      */
@@ -90,6 +95,14 @@ public class Model {
         suspensionHook = sh;
     }
 
+
+    public Supplier<Writable> getDataSupplier() {
+        return dataSupplier;
+    }
+
+    public void setDataSupplier(Supplier<Writable> dataSupplier) {
+        this.dataSupplier = dataSupplier;
+    }
 
     public ModelLabelCallback getModelLabelCallback() {
         return modelLabelCallback;
