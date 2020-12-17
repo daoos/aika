@@ -96,7 +96,7 @@ public class Model {
     }
 
 
-    public Supplier<Writable> getDataSupplier() {
+    public Supplier<Writable> getCustomDataInstanceSupplier() {
         return dataSupplier;
     }
 

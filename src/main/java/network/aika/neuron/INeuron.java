@@ -63,7 +63,7 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
     private String label;
     private Type type;
 
-    private Writable data;
+    private Writable customData;
 
 
     public enum Type {
@@ -151,12 +151,12 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         return label;
     }
 
-    public Writable getData() {
-        return data;
+    public Writable getCustomData() {
+        return customData;
     }
 
-    public void setData(Writable data) {
-        this.data = data;
+    public void setCustomData(Writable customData) {
+        this.customData = customData;
     }
 
     public Type getType() {
@@ -650,9 +650,9 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
             out.writeInt(0);
         }
 
-        out.writeBoolean(data != null);
-        if(data != null) {
-            data.write(out);
+        out.writeBoolean(customData != null);
+        if(customData != null) {
+            customData.write(out);
         }
     }
 
@@ -714,8 +714,8 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         }
 
         if(in.readBoolean()) {
-            data = getModel().getDataSupplier().get();
-            data.readFields(in, getModel());
+            customData = getModel().getCustomDataInstanceSupplier().get();
+            customData.readFields(in, getModel());
         }
 
         passiveInputFunction = m.passiveActivationFunctions.get(getId());
