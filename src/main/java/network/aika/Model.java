@@ -100,7 +100,7 @@ public class Model {
         return dataSupplier;
     }
 
-    public void setDataSupplier(Supplier<Writable> dataSupplier) {
+    public void setCustomDataInstanceSupplier(Supplier<Writable> dataSupplier) {
         this.dataSupplier = dataSupplier;
     }
 

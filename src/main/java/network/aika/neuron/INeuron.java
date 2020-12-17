@@ -714,8 +714,8 @@ public class INeuron extends AbstractNode<Neuron> implements Comparable<INeuron>
         }
 
         if(in.readBoolean()) {
-            customData = getModel().getCustomDataInstanceSupplier().get();
-            customData.readFields(in, getModel());
+            customData = m.getCustomDataInstanceSupplier().get();
+            customData.readFields(in, m);
         }
 
         passiveInputFunction = m.passiveActivationFunctions.get(getId());
