@@ -2,19 +2,19 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>org.aika-software</groupId>
+    <groupId>network.aika</groupId>
     <artifactId>aika</artifactId>
     <packaging>jar</packaging>
-    <version>1.4.12</version>
+    <version>1.4.13</version>
     <name>aika</name>
-    <url>http://aika.network</url>
-    <description>An artificial intelligence for knowledge acquisition</description>
+    <url>https://aika.network</url>
+    <description>An Artificial Intelligence for Knowledge Acquisition</description>
 
     <developers>
         <developer>
             <id>Lukas Molzberger</id>
             <name>Lukas Molzberger</name>
-            <email>contact@aika-software.org</email>
+            <email>lukas.molzberger@aika.network</email>
         </developer>
     </developers>
 
@@ -30,7 +30,7 @@
         <url>https://github.com/aika-algorithm/aika</url>
         <connection>scm:git:git://github.com/aika-algorithm/aika.git</connection>
         <developerConnection>scm:git:git@github.com:aika-algorithm/aika.git</developerConnection>
-        <tag>aika-1.4.1</tag>
+        <tag>aika-1.4.13</tag>
     </scm>
 
 
@@ -58,7 +58,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -136,11 +135,9 @@
                 </includes>
             </testResource>
         </testResources>
-
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
