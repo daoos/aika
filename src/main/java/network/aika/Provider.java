@@ -20,6 +20,8 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
 
     private static final Logger log = LoggerFactory.getLogger(Provider.class);
 
+    public static boolean ENABLE_COMPRESSION = true;
+
     protected Model model;
     protected Integer id;
 
@@ -129,13 +131,20 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
     public void save() {
         if (n.modified) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try (
-                    GZIPOutputStream gzipos = new GZIPOutputStream(baos);
-                    DataOutputStream dos = new DataOutputStream(gzipos)) {
-
-                n.write(dos);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if(ENABLE_COMPRESSION) {
+                try (
+                        GZIPOutputStream gzipos = new GZIPOutputStream(baos);
+                        DataOutputStream dos = new DataOutputStream(gzipos)) {
+                    n.write(dos);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try (DataOutputStream dos = new DataOutputStream(baos)) {
+                    n.write(dos);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), n.isNeuron(), baos.toByteArray());
@@ -155,12 +164,20 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         }
 
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        try (
-                GZIPInputStream gzipis = new GZIPInputStream(bais);
-                DataInputStream dis = new DataInputStream(gzipis)) {
-            n = (T) AbstractNode.read(dis, this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(ENABLE_COMPRESSION) {
+            try (
+                    GZIPInputStream gzipis = new GZIPInputStream(bais);
+                    DataInputStream dis = new DataInputStream(gzipis)) {
+                n = (T) AbstractNode.read(dis, this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try (DataInputStream dis = new DataInputStream(bais)) {
+                n = (T) AbstractNode.read(dis, this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         n.reactivate();
