@@ -81,7 +81,7 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
     public synchronized void store(Integer id, byte[] data) throws IOException {
         dataStore.seek(dataStore.length());
 
-        index.put(id, new long[]{(int) dataStore.getFilePointer(), data.length});
+        index.put(id, new long[]{dataStore.getFilePointer(), data.length});
         dataStore.write(data);
     }
 
