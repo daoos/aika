@@ -17,6 +17,7 @@
 package network.aika;
 
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -30,14 +31,23 @@ import java.util.Set;
  */
 public interface SuspensionHook {
 
+    Integer getIdByLabel(String label);
+
+    void putLabel(String label, Integer id);
+
+    void removeLabel(String label);
 
     int getNewId();
 
-    void store(int id, String label, Set<String> modelLabels, boolean isNeuron, byte[] data);
+    void store(Integer id, byte[] data) throws IOException;
 
-    byte[] retrieve(int id);
+    byte[] retrieve(Integer id) throws IOException;
 
-    void delete(String label, int id);
+    void remove(Integer id);
 
     Iterable<Integer> getAllNodeIds();
+
+    void loadIndex();
+
+    void storeIndex();
 }

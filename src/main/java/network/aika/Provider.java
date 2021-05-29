@@ -147,7 +147,11 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
                 }
             }
 
-            model.suspensionHook.store(id, n.getLabel(), n.getModelLabels(), n.isNeuron(), baos.toByteArray());
+            try {
+                model.suspensionHook.store(id, baos.toByteArray());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         n.modified = false;
     }
@@ -156,7 +160,12 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
     private void reactivate() {
         assert model.suspensionHook != null;
 
-        byte[] data = model.suspensionHook.retrieve(id);
+        byte[] data = new byte[0];
+        try {
+            data = model.suspensionHook.retrieve(id);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if(data == null) {
             log.warn("Tried to reactivate deleted node!");
             markedDeleted = true;
@@ -197,7 +206,8 @@ public class Provider<T extends AbstractNode> implements Comparable<Provider<?>>
         n.delete(modelLabels);
 
 //        model.removeProvider(this);
-        model.suspensionHook.delete(n.getLabel(), id);
+        model.suspensionHook.remove(id);
+        model.suspensionHook.removeLabel(n.getLabel());
         markedDeleted = true;
     }
 

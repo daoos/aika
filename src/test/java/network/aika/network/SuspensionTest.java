@@ -133,6 +133,8 @@ public class SuspensionTest {
         public AtomicInteger currentId = new AtomicInteger(0);
 
         Map<Integer, byte[]> storage = new TreeMap<>();
+        private Map<String, Integer> labels = new TreeMap<>();
+
 
         @Override
         public int getNewId() {
@@ -140,23 +142,48 @@ public class SuspensionTest {
         }
 
         @Override
-        public void store(int id, String label, Set<String> modelLabels, boolean isNeuron, byte[] data) {
+        public void store(Integer id, byte[] data) {
             storage.put(id, data);
         }
 
         @Override
-        public byte[] retrieve(int id) {
+        public byte[] retrieve(Integer id) {
             return storage.get(id);
         }
 
         @Override
-        public void delete(String label, int id) {
+        public void remove(Integer id) {
             storage.remove(id);
+        }
+
+        @Override
+        public Integer getIdByLabel(String label) {
+            return labels.get(label);
+        }
+
+        @Override
+        public void putLabel(String label, Integer id) {
+            labels.put(label, id);
+        }
+
+        @Override
+        public void removeLabel(String label) {
+            labels.remove(label);
         }
 
         @Override
         public Iterable<Integer> getAllNodeIds() {
             return storage.keySet();
+        }
+
+        @Override
+        public void loadIndex() {
+
+        }
+
+        @Override
+        public void storeIndex() {
+
         }
     }
 
