@@ -54,6 +54,10 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
         dataStore = new RandomAccessFile(getFile("model"), "rw");
     }
 
+    public void close() throws IOException {
+        dataStore.close();
+    }
+
     @Override
     public Integer getIdByLabel(String label) {
         return labels.get(label);
