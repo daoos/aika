@@ -31,6 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class FSSuspensionCallbackImpl implements SuspensionHook {
 
+    public static String MODEL = "model";
+    public static String INDEX = "index";
+
     private AtomicInteger currentId = new AtomicInteger(0);
 
     private Map<String, Integer> labels = Collections.synchronizedMap(new TreeMap<>());
@@ -46,12 +49,18 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
         this.path = path;
         this.modelLabel = modelLabel;
         if(create) {
-            getFile("model").deleteOnExit();
-            getFile("index").deleteOnExit();
+            File modelFile = getFile(MODEL);
+            if(modelFile.exists())
+                modelFile.deleteOnExit();
+
+            File indexFile = getFile(INDEX);
+            if(indexFile.exists())
+                indexFile.deleteOnExit();
+
         } else {
             loadIndex();
         }
-        dataStore = new RandomAccessFile(getFile("model"), "rw");
+        dataStore = new RandomAccessFile(getFile(MODEL), "rw");
     }
 
     public void close() throws IOException {
@@ -115,7 +124,7 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
 
     @Override
     public void loadIndex() {
-        try (FileInputStream fis = new FileInputStream(getFile("index"));
+        try (FileInputStream fis = new FileInputStream(getFile(INDEX));
              ByteArrayInputStream bais = new ByteArrayInputStream(fis.readAllBytes());
              DataInputStream dis = new DataInputStream(bais)) {
             readIndex(dis);
@@ -129,7 +138,7 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try (DataOutputStream dos = new DataOutputStream(baos);
-             FileOutputStream fos = new FileOutputStream(getFile("index"))) {
+             FileOutputStream fos = new FileOutputStream(getFile(INDEX))) {
             writeIndex(dos);
             fos.write(baos.toByteArray());
         } catch (IOException e) {
