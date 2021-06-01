@@ -21,6 +21,7 @@ import network.aika.SuspensionHook;
 
 import java.io.*;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,7 +37,7 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
 
     private AtomicInteger currentId = new AtomicInteger(0);
 
-    private Map<String, Integer> labels = Collections.synchronizedMap(new TreeMap<>());
+    private Map<String, Integer> labels = Collections.synchronizedMap(new HashMap<>());
     private Map<Integer, long[]> index = Collections.synchronizedMap(new TreeMap<>());
 
     private File path;
@@ -151,18 +152,18 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
     }
 
     private void readIndex(DataInput in) throws IOException {
-        currentId = new AtomicInteger(in.readInt());
+        currentId = new AtomicInteger((int) in.readLong());
 
         labels.clear();
         while(in.readBoolean()) {
             String l = in.readUTF();
-            Integer id = in.readInt();
+            Integer id = (int)in.readLong();
             labels.put(l, id);
         }
 
         index.clear();
         while(in.readBoolean()) {
-            Integer id = in.readInt();
+            Integer id = (int)in.readLong();
             long[] pos = new long[2];
             pos[0] = in.readLong();
             pos[1] = in.readInt();
