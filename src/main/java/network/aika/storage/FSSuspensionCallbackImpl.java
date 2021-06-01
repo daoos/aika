@@ -51,11 +51,11 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
         if(create) {
             File modelFile = getFile(MODEL);
             if(modelFile.exists())
-                modelFile.deleteOnExit();
+                modelFile.delete();
 
             File indexFile = getFile(INDEX);
             if(indexFile.exists())
-                indexFile.deleteOnExit();
+                indexFile.delete();
 
         } else {
             loadIndex();
