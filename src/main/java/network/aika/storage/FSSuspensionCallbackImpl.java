@@ -20,6 +20,8 @@ package network.aika.storage;
 import network.aika.SuspensionHook;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,16 +42,17 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
     private Map<String, Integer> labels = Collections.synchronizedMap(new HashMap<>());
     private Map<Integer, long[]> index = Collections.synchronizedMap(new TreeMap<>());
 
-    private File path;
+    private Path path;
     private String modelLabel;
 
     private RandomAccessFile dataStore;
 
 
-    public void open(File path, String modelLabel, boolean create) throws FileNotFoundException {
+    public void open(Path path, String modelLabel, boolean create) throws IOException {
         this.path = path;
         this.modelLabel = modelLabel;
         if(create) {
+            Files.createDirectories(path);
             File modelFile = getFile(MODEL);
             if(modelFile.exists())
                 modelFile.delete();
@@ -148,7 +151,7 @@ public class FSSuspensionCallbackImpl implements SuspensionHook {
     }
 
     private File getFile(String prefix) {
-        return new File(path, prefix + "-" + modelLabel + ".dat");
+        return new File(path.toFile(), prefix + "-" + modelLabel + ".dat");
     }
 
     private void readIndex(DataInput in) throws IOException {
